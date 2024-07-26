@@ -16,7 +16,7 @@ jobs:
           -H "X-Postmark-Server-Token: $POSTMARK_API_KEY" \
           -H "Content-Type: application/json" \
           -d '{
-            "From": "pheintz@gmail.com",
+            "From": "pheintz@hotmail.com",
             "To": "pheintz@hotmail.com",
             "Subject": "GitHub Event Notification",
             "TextBody": "A GitHub event has occurred. Details: ${GITHUB_EVENT_NAME} on ${GITHUB_REPOSITORY}."
