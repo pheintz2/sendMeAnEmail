@@ -1,4 +1,4 @@
-name: Send Email on Event
+name: Send Email with Postmark
 
 on:
   workflow_dispatch: # Allows manual triggering
@@ -10,26 +10,14 @@ jobs:
     steps:
       - name: Send Email
         env:
-          EMAIL_API_URL: ${{ secrets.SENDGRID_API_URL }}
-          EMAIL_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
+          POSTMARK_API_KEY: ${{ secrets.POSTMARK_API_KEY }}
         run: |
-          curl -X POST $EMAIL_API_URL \
-          -H "Authorization: Bearer $EMAIL_API_KEY" \
+          curl -X POST https://api.postmarkapp.com/email \
+          -H "X-Postmark-Server-Token: $POSTMARK_API_KEY" \
           -H "Content-Type: application/json" \
           -d '{
-            "personalizations": [
-              {
-                "to": [
-                  {"email": "recipient@example.com"}
-                ],
-                "subject": "GitHub Event Notification"
-              }
-            ],
-            "from": {"email": "your-email@example.com"},
-            "content": [
-              {
-                "type": "text/plain",
-                "value": "A GitHub event has occurred. Details: ${GITHUB_EVENT_NAME} on ${GITHUB_REPOSITORY}."
-              }
-            ]
+            "From": "your-email@example.com",
+            "To": "recipient@example.com",
+            "Subject": "GitHub Event Notification",
+            "TextBody": "A GitHub event has occurred. Details: ${GITHUB_EVENT_NAME} on ${GITHUB_REPOSITORY}."
           }'
