@@ -1,0 +1,32 @@
+name: Send Email on Event
+
+on:
+  push:
+    branches:
+      - main
+  issues:
+    types: [opened, edited, closed]
+  workflow_dispatch: # Allows manual triggering
+
+jobs:
+  send-email:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Send Email
+        env:
+          EMAIL_API_URL: ${{ secrets.EMAIL_API_URL }}
+          EMAIL_API_KEY: ${{ secrets.EMAIL_API_KEY }}
+        run: |
+          curl -X POST $EMAIL_API_URL \
+          -H "Authorization: Bearer $EMAIL_API_KEY" \
+          -H "Content-Type: application/json" \
+          -d '{
+            "subject": "GitHub Event Notification",
+            "body": "A GitHub event has occurred. Details: ${GITHUB_EVENT_NAME} on ${GITHUB_REPOSITORY}.",
+            "to": "recipient@example.com",
+            "from": "your-email@example.com"
+          }'
